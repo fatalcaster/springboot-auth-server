@@ -12,7 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import org.jose4j.jwt.JwtClaims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,10 +30,15 @@ import org.springframework.web.util.WebUtils;
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-  private List<String> whitelistedRoutes = List.of(
-    "/api/user/login",
-    "/api/user/register",
-    "/api/roles"
+  private final Map<String, Boolean> whitelistedRoutes = new HashMap<>(
+    Map.of(
+      "/api/user/login",
+      true,
+      "/api/user/register",
+      true,
+      "/api/user/roles",
+      true
+    )
   );
 
   @Autowired
@@ -43,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   protected boolean shouldNotFilter(HttpServletRequest request)
     throws ServletException {
     String path = request.getRequestURI();
-    return whitelistedRoutes.contains(path);
+    return whitelistedRoutes.containsKey(path);
   }
 
   @Override
