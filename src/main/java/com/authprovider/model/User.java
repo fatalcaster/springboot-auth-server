@@ -46,6 +46,9 @@ public class User implements UserDetails {
   )
   private List<Role> roles = new ArrayList<>();
 
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+  private List<Client> clients = new ArrayList<>();
+
   public List<Role> getRoles() {
     return roles;
   }
@@ -81,7 +84,7 @@ public class User implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
-    return false;
+    return true;
   }
 
   @Override
@@ -96,6 +99,10 @@ public class User implements UserDetails {
 
   public UserResponseDTO toResponseDTO() {
     return new UserResponseDTO(this.id, this.email, this.getRoles());
+  }
+
+  public String getId() {
+    return this.id.toString();
   }
 
   @Override
