@@ -2,6 +2,7 @@ package com.authprovider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.authprovider.dto.SecureCookie;
 import com.authprovider.model.Role;
 import com.authprovider.model.User;
 import com.authprovider.service.RoleService;
@@ -55,7 +56,7 @@ public class UserIntegrationTest {
     mockMvc
       .perform(
         MockMvcRequestBuilders
-          .post("/api/user/register")
+          .post("/api/auth/register")
           .contentType(MediaType.APPLICATION_JSON)
           .content(reqContent)
       )
@@ -76,7 +77,7 @@ public class UserIntegrationTest {
     mockMvc
       .perform(
         MockMvcRequestBuilders
-          .post("/api/user/login")
+          .post("/api/auth/login")
           .contentType(MediaType.APPLICATION_JSON)
           .content(reqContent)
       )
@@ -105,11 +106,13 @@ public class UserIntegrationTest {
     mockMvc
       .perform(
         MockMvcRequestBuilders
-          .post("/api/user/login")
+          .post("/api/auth/login")
           .contentType(MediaType.APPLICATION_JSON)
           .content(reqContent)
       )
       .andExpect(MockMvcResultMatchers.status().isOk())
-      .andExpect(MockMvcResultMatchers.cookie().exists("access_token"));
+      .andExpect(
+        MockMvcResultMatchers.cookie().exists(SecureCookie.accessTokenKey)
+      );
   }
 }
