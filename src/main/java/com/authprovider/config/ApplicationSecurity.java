@@ -25,27 +25,24 @@ public class ApplicationSecurity {
     return new BCryptPasswordEncoder();
   }
 
-  @Autowired
-  private JwtAuthorizationFilter jwtAuthFilter;
-
-  // @Autowired
-  // private AuthenticationProvider authenticationProvider;
-
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(
+    HttpSecurity http,
+    @Autowired JwtAuthorizationFilter jwtAuthorizationFilter
+  ) throws Exception {
     http.csrf().disable();
     http
       .sessionManagement()
       .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http
       .authorizeHttpRequests()
-      .requestMatchers("/api/user/**", "/api/roles")
+      .requestMatchers("/api/auth/**", "/api/roles")
       .permitAll()
       .anyRequest()
       .authenticated()
       .and()
       .addFilterBefore(
-        jwtAuthFilter,
+        jwtAuthorizationFilter,
         UsernamePasswordAuthenticationFilter.class
       );
 

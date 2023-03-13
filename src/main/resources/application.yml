@@ -63,5 +63,4 @@ spring:
       MQIDAQAB
   main:
     web-application-type: servlet
-    allow-circular-references: true
 
