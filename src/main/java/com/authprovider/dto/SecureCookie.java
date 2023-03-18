@@ -6,6 +6,7 @@ import java.time.Duration;
 public class SecureCookie extends Cookie {
 
   public static final String accessTokenKey = "access_token";
+  public static final String refreshTokenKey = "refresh_token";
 
   public SecureCookie(String name, String value) {
     super(name, value);

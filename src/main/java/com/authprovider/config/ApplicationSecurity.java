@@ -1,13 +1,8 @@
 package com.authprovider.config;
 
-import com.authprovider.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,7 +31,12 @@ public class ApplicationSecurity {
       .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http
       .authorizeHttpRequests()
-      .requestMatchers("/api/auth/**", "/api/roles")
+      .requestMatchers(
+        "/api/auth/**",
+        "/api/roles",
+        "/api/test",
+        "/api/oauth2/token"
+      )
       .permitAll()
       .anyRequest()
       .authenticated()

@@ -1,8 +1,10 @@
 package com.authprovider.controller;
 
 import com.authprovider.dto.RoleRequestDTO;
+import com.authprovider.exceptions.RoleAlreadyExists;
 import com.authprovider.model.Role;
 import com.authprovider.service.RoleService;
+import com.authprovider.service.exceptions.ConflictException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,12 @@ public class RoleController {
   public String createRole(@RequestBody RoleRequestDTO req) {
     Role role = req.toRole();
 
-    roleService.saveRole(role);
+    try {
+      roleService.saveRole(role);
+    } catch (Exception e) {
+      throw new RoleAlreadyExists();
+    }
+
     return role.toString();
   }
 

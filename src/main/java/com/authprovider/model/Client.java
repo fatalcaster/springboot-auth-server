@@ -1,14 +1,16 @@
 package com.authprovider.model;
 
 import com.authprovider.dto.ClientDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
@@ -19,15 +21,38 @@ public class Client {
 
   @Id
   @UuidGenerator
-  @Column(name = "id")
+  @Column(name = "id", unique = true)
+  @JsonProperty("client_id")
   private UUID id;
 
   @Column
-  private String secret;
+  @JsonProperty("client_secret")
+  private String secret = UUID.randomUUID().toString();
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
   private User owner;
+
+  @OneToMany(mappedBy = "tokenProvider", fetch = FetchType.LAZY)
+  private List<Token> tokenLists;
+
+  public User getOwner() {
+    return owner;
+  }
+
+  private boolean isNonExpired = true;
+
+  public boolean getIsNonExpired() {
+    return isNonExpired;
+  }
+
+  public void setIsNonExpired(boolean isNonExpired) {
+    this.isNonExpired = isNonExpired;
+  }
+
+  public void setOwner(User owner) {
+    this.owner = owner;
+  }
 
   public UUID getId() {
     return id;
@@ -42,6 +67,24 @@ public class Client {
   }
 
   public ClientDTO toClientDto() {
-    return new ClientDTO(this.id.toString(), this.owner.getId());
+    return new ClientDTO(
+      this.id.toString(),
+      this.owner.getId(),
+      this.getIsNonExpired()
+    );
+  }
+
+  public ClientDTO toClientDto(boolean shareSecret) {
+    if (shareSecret) {
+      return new ClientDTO(
+        this.id.toString(),
+        this.owner.getId(),
+        this.getSecret(),
+        this.getIsNonExpired()
+      );
+    }
+    throw new InternalError(
+      "You must explicitly share the secret -> shareSecret = true"
+    );
   }
 }

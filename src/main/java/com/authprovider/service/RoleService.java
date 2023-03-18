@@ -1,8 +1,8 @@
 package com.authprovider.service;
 
-import com.authprovider.exceptions.RoleAlreadyExists;
 import com.authprovider.model.Role;
 import com.authprovider.repo.RoleRepo;
+import com.authprovider.service.exceptions.ConflictException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class RoleService implements IRoleService {
   }
 
   @Override
-  public void saveRole(Role role) throws RoleAlreadyExists {
+  public void saveRole(Role role) throws ConflictException {
     repo.save(role);
   }
 

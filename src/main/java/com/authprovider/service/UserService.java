@@ -4,6 +4,7 @@ import com.authprovider.exceptions.BasicRoleNotDefined;
 import com.authprovider.exceptions.RoleNotFound;
 import com.authprovider.exceptions.UserAlreadyExists;
 import com.authprovider.exceptions.UserNotFound;
+import com.authprovider.model.Client;
 import com.authprovider.model.Role;
 import com.authprovider.model.User;
 import com.authprovider.repo.RoleRepo;
@@ -13,7 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +34,8 @@ public class UserService implements IUserService {
   }
 
   public void saveUser(User user) {
-    Boolean userExist = getUserByEmail(user.getUsername()).isPresent();
-    if (Boolean.TRUE.equals(userExist)) {
+    boolean userExist = getUserByEmail(user.getUsername()).isPresent();
+    if (userExist) {
       throw new UserAlreadyExists();
     }
 
@@ -43,12 +43,12 @@ public class UserService implements IUserService {
 
     Role userRole = roleRepo
       .findByName("user")
-      .orElseThrow(() -> new BasicRoleNotDefined());
+      .orElseThrow(BasicRoleNotDefined::new);
     user.getRoles().add(userRole);
     userRepo.save(user);
   }
 
-  public Boolean passwordsMatch(User user, String password) {
+  public boolean passwordsMatch(User user, String password) {
     return passwordEncoder.matches(password, user.getPassword());
   }
 
@@ -57,13 +57,11 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public void addRole(String email, String roleName) {
-    Role role = roleRepo
-      .findByName(roleName)
-      .orElseThrow(() -> new RoleNotFound());
+  public void addRole(String id, String roleName) {
+    Role role = roleRepo.findByName(roleName).orElseThrow(RoleNotFound::new);
     User user = userRepo
-      .findByEmail(email)
-      .orElseThrow(() -> new UserNotFound());
+      .findById(UUID.fromString(id))
+      .orElseThrow(UserNotFound::new);
     user.getRoles().add(role);
   }
 
@@ -75,5 +73,17 @@ public class UserService implements IUserService {
   @Override
   public UserDetails loadUserByUsername(String email) {
     return userRepo.findByEmail(email).orElse(null);
+  }
+
+  @Override
+  public void addClient(User user, Client client) {
+    user.getClients().add(client);
+    this.saveUser(user);
+  }
+
+  @Override
+  public void addRole(User user, String roleName) {
+    Role role = roleRepo.findByName(roleName).orElseThrow(RoleNotFound::new);
+    user.getRoles().add(role);
   }
 }

@@ -25,42 +25,81 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
-  security:
-    jwt-private: |-
-      MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDeFOUSX4MV5YKD
-      CnoCDLar9xbqoOAti0tEz8snM+81Dj8mQUuuSTQeNDfsBdMWUQL4/mfl8qkbtEfe
-      7BXSI6iWhHtiys/NqhYmX1/bfe+M7qfspYd3McImC9S1m5s4/jPcWnpTATATt4Oc
-      8u3mHzL+Pa7sPjGb2ftrxPdb6UQn2GS+TPbfE1rdQATS5xU7GgAbtKA9XKLLky+K
-      MEILSHYtTxNDsalkvqofZe0LnJiYZZEdSRFFuvjhWuW5KKbbKfwcqs8pZb/u2B7g
-      hMkOq16+sDJVDPqW2fotqy7HN/vYAangnr2B9bbz+A+yU9hvQmXjWUuSAXs8bv9t
-      8WzctdMxAgMBAAECggEAe/QHo0iiHr+aJ8/aJ3i3IKZqKQ0f8uuzWDXuuvPWyLMp
-      9g0t05pSN6WHrPnXRrZyxU0h6ouVbbwi/T6iM0bp2xEY2Rw//he4AzTqiNTytqOi
-      IIiHYrToG1oxICg47AeeJJhvfBLGpcqg8CH7PJ0fVh5RmtRf1hBFr3IhajB5dQ7d
-      I3fpqbyi2VNhqjwM9ArVDJaiSagyiBg4SGVXyNL9P0CpNr1xebED5CaiG4ckfd4M
-      69UcyXHAkaBaUylP0vr462ROPNHUTLGt4SQLJ8nsphNzxMhkQz59myOxKgtc4GJb
-      DwduQK6m+d6PAoyPs5FgOk7TMzyCJkDJJW+pjpG6AQKBgQD7ypA4b4wQB/xnum9W
-      0lJbUhLzPKHgEDZp/fi6SUakp6WpAcr9hLEIvc9uDRHRc/kc13Ezzg5AJUJ5mInV
-      aqpiUi5RqkKAHfIPIF1e/bHgg/cnFfqcNFwuUXWSPReE8XUQS7pBrVgPd5688YoO
-      DfYCAHYIpEzjuaTsOgnvcRw9YQKBgQDhyzOJT+ZicH9TSqKmjPMqw9MxAB/PueT5
-      joBFoJrHPVNNN7asf0RQIHoH+c8wSAyqn9gnmzIQnrHtzpX+OJwD/ANyJOQSkRQ7
-      5EfxBwzR7NByu3hJzCvWXFDZBBDdgEjmXCp0CInrtDbwshSN55mdFnBOgr3a78Vw
-      bcwwSaQX0QKBgDEO4ZStXyvMcog/UewnpHY4goqz2JJQdlmmayzYlBQGugc42zUU
-      Am5ClUTK9RrLLtFIxLykPDCRUedhKhHT64imnHG666QMsZny415bramh7KjH5oFC
-      zmcT5gVtM8TqSrW3G34qaQrycpI7uXtNiw4OyvCaGoUQKasBD+iAMFFhAoGAeBM7
-      4PXgqtDwpTa3sKKcXk2tbg2G3U0ae6xQgraaGQJ/3jyWpL05cvMSclNi32Yxdjtz
-      E/zwbu416SVHlt47+dJ3cqgzsbv9aqxHpeH961VotNsFaRlu5pxJUl9bKLAkFH1H
-      BlXUIsi/vti1HZHgmy1npBjbJicEdHmvcK542UECgYEA2VOiwR7dsTY+3XUo7wKN
-      NaXDE9XmD75cc/2aPVNoTwS/Xzo6Z2idArWEqJUElArnf6tBPQ/wMYifYf9XlCfL
-      RxtSP89Lo6hF6LE4wRocYbovhnD2siPfwq1B4z3YL55rBi9Co8rzV/PjkG0pCUC7
-      HhgTOpzptLxoXCFeJStBg9w=
-    jwt-public: |-
-      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3hTlEl+DFeWCgwp6Agy2
-      q/cW6qDgLYtLRM/LJzPvNQ4/JkFLrkk0HjQ37AXTFlEC+P5n5fKpG7RH3uwV0iOo
-      loR7YsrPzaoWJl9f233vjO6n7KWHdzHCJgvUtZubOP4z3Fp6UwEwE7eDnPLt5h8y
-      /j2u7D4xm9n7a8T3W+lEJ9hkvkz23xNa3UAE0ucVOxoAG7SgPVyiy5MvijBCC0h2
-      LU8TQ7GpZL6qH2XtC5yYmGWRHUkRRbr44VrluSim2yn8HKrPKWW/7tge4ITJDqte
-      vrAyVQz6ltn6Lasuxzf72AGp4J69gfW28/gPslPYb0Jl41lLkgF7PG7/bfFs3LXT
-      MQIDAQAB
   main:
     web-application-type: servlet
-
+security:
+  jwt-key-set:
+    -
+      key-id: test1
+      private-key: |-
+        MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrOrCiSAO1yY0Z
+        hKqFZrdmcFooKCuJvr26AV9csM3TEfhgJ2ueaBxUfGDHw1OBb+f0x/P0FIEJONI+
+        CA0YFm0G/2KvJT+UzfoOCk2P4qxK+X6z6xqFwyYyDR11I9hw1iMJS1iNs7VW3ro/
+        7ngm8JrnLkbw2UuCraxuOewVSj8R3KIiYNIA3nTmCLX26YM9Xb0Ww0L1wTwwABft
+        JpZV+Ea13iHZIzPINgk1KFXgFpwL7+WzjaR6WKuHjsea+Bviug8w8ub1zOi3QQ+M
+        sEZDMu8ey66kZhF8loQ9WfrUozYRSCopGptcOAuXWOwrLXEvNxfFeo7alfeAzNUZ
+        vrET+ojjAgMBAAECggEAOUqwHrZfgPU4EpEHXzpnTOHsc39lK0VzvEv9R/wgBVqJ
+        HhI72fcNf15TzBO80PfKjQnuVvJvgyl9u3IGjmlX4K5vAK2X0MxiLO1BetwAjro5
+        q+SFLzMaqHIdTJyQaNse6XKafNjaP/A7eLrCNOnBMLFKwfqKs6dNKgOdhonw1o5o
+        vU/5vTf0nOTCcP/Pmp/rETfJ11lPVHimvz8ZWiqnJQ81bybe6V9sS3wP0/9bmZcd
+        whgDPD0NyFzI5IPlTi+ogq5i0lmmGaNanuXORCIup3RoCWt122biMfVjEutXby2Q
+        yfqxPbcVSU5wBoR+Ul+c/kArSCEI7YVhXmR4/7w1sQKBgQD1+cY7Gv54yVMB502H
+        b1NeMWjtOn7M1PpMF2QHbOaEvmE1JBSXyvctWw7k/ZretfXNwLxY3nzsxpFjvVtZ
+        J7Kv9IupRL3GtQWAuR7kMCmlP7qnC4jGzfwIvoIpleVaOLWHRra+NDmJKtM/tjyp
+        i5LHW+7Eptxcmg6nPe2VYOWQ1wKBgQD00MzFlOtoGVoSh3lU584rK78RtjSAxsRP
+        KBHntYXaOJCciwhKEBGi/5c5Ac2CG6akS2IxuCUaX2/hxqIWk49EgtQE7+OIumQI
+        rggss1iJQnxVKP2i2Hup5W3q1kNKPm5DLSLLOBdaOekObyiUNQtSJYaiEelhs1oW
+        UYHC8QBq1QKBgQCx0SQFvGjzxo6UVLMOUmNRN6TjwiLCTsC22z37xDUNB1fcg73D
+        Uf3IMwicb91SXPZaDJfcItLqlE2sbcootHMPkliYQFJ04I4e1TTIvyyMAnsboVH6
+        bhRh+d6801jfFRndtjgLXlOtnmDisQo/gt/T8Ni2Hu40n0Yyjqk/ELJENwKBgCii
+        l7qb807+FkNJFUyQhVoJEtffxGszktYIsqAhMyx7gxVYxnF0pVjGz9T4haH48PoI
+        QS47gH0WJj31eGYC7B7VEFgZcUz6kywVpum0gxeVX4nLGf5zrGMQ3+PA2L50Cl1A
+        GqxcjRO+1P4+WR/whgaGkAhKrNA4stVNhhpTYlxZAoGBAK76IABz4ICqf3TpX5zZ
+        qDHLp8o92oUscwa5wAfWvzUh11RfdkpdQkCOTwzc435OG8QDglbXIhKNdQ07Q/a1
+        kYKMeMAKndJ44ULzHDRNgZrnZXSnxjOxuhBwh7zL3mCAVztfSRobX7+9d+fWBn3e
+        rWkNGo+j4sd1ipR0LsffEJGB
+      public-key: |-
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6zqwokgDtcmNGYSqhWa3
+        ZnBaKCgrib69ugFfXLDN0xH4YCdrnmgcVHxgx8NTgW/n9Mfz9BSBCTjSPggNGBZt
+        Bv9iryU/lM36DgpNj+KsSvl+s+sahcMmMg0ddSPYcNYjCUtYjbO1Vt66P+54JvCa
+        5y5G8NlLgq2sbjnsFUo/EdyiImDSAN505gi19umDPV29FsNC9cE8MAAX7SaWVfhG
+        td4h2SMzyDYJNShV4BacC+/ls42kelirh47Hmvgb4roPMPLm9czot0EPjLBGQzLv
+        HsuupGYRfJaEPVn61KM2EUgqKRqbXDgLl1jsKy1xLzcXxXqO2pX3gMzVGb6xE/qI
+        4wIDAQAB
+    -
+      key-id: test2
+      private-key: |-
+        MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrOrCiSAO1yY0Z
+        hKqFZrdmcFooKCuJvr26AV9csM3TEfhgJ2ueaBxUfGDHw1OBb+f0x/P0FIEJONI+
+        CA0YFm0G/2KvJT+UzfoOCk2P4qxK+X6z6xqFwyYyDR11I9hw1iMJS1iNs7VW3ro/
+        7ngm8JrnLkbw2UuCraxuOewVSj8R3KIiYNIA3nTmCLX26YM9Xb0Ww0L1wTwwABft
+        JpZV+Ea13iHZIzPINgk1KFXgFpwL7+WzjaR6WKuHjsea+Bviug8w8ub1zOi3QQ+M
+        sEZDMu8ey66kZhF8loQ9WfrUozYRSCopGptcOAuXWOwrLXEvNxfFeo7alfeAzNUZ
+        vrET+ojjAgMBAAECggEAOUqwHrZfgPU4EpEHXzpnTOHsc39lK0VzvEv9R/wgBVqJ
+        HhI72fcNf15TzBO80PfKjQnuVvJvgyl9u3IGjmlX4K5vAK2X0MxiLO1BetwAjro5
+        q+SFLzMaqHIdTJyQaNse6XKafNjaP/A7eLrCNOnBMLFKwfqKs6dNKgOdhonw1o5o
+        vU/5vTf0nOTCcP/Pmp/rETfJ11lPVHimvz8ZWiqnJQ81bybe6V9sS3wP0/9bmZcd
+        whgDPD0NyFzI5IPlTi+ogq5i0lmmGaNanuXORCIup3RoCWt122biMfVjEutXby2Q
+        yfqxPbcVSU5wBoR+Ul+c/kArSCEI7YVhXmR4/7w1sQKBgQD1+cY7Gv54yVMB502H
+        b1NeMWjtOn7M1PpMF2QHbOaEvmE1JBSXyvctWw7k/ZretfXNwLxY3nzsxpFjvVtZ
+        J7Kv9IupRL3GtQWAuR7kMCmlP7qnC4jGzfwIvoIpleVaOLWHRra+NDmJKtM/tjyp
+        i5LHW+7Eptxcmg6nPe2VYOWQ1wKBgQD00MzFlOtoGVoSh3lU584rK78RtjSAxsRP
+        KBHntYXaOJCciwhKEBGi/5c5Ac2CG6akS2IxuCUaX2/hxqIWk49EgtQE7+OIumQI
+        rggss1iJQnxVKP2i2Hup5W3q1kNKPm5DLSLLOBdaOekObyiUNQtSJYaiEelhs1oW
+        UYHC8QBq1QKBgQCx0SQFvGjzxo6UVLMOUmNRN6TjwiLCTsC22z37xDUNB1fcg73D
+        Uf3IMwicb91SXPZaDJfcItLqlE2sbcootHMPkliYQFJ04I4e1TTIvyyMAnsboVH6
+        bhRh+d6801jfFRndtjgLXlOtnmDisQo/gt/T8Ni2Hu40n0Yyjqk/ELJENwKBgCii
+        l7qb807+FkNJFUyQhVoJEtffxGszktYIsqAhMyx7gxVYxnF0pVjGz9T4haH48PoI
+        QS47gH0WJj31eGYC7B7VEFgZcUz6kywVpum0gxeVX4nLGf5zrGMQ3+PA2L50Cl1A
+        GqxcjRO+1P4+WR/whgaGkAhKrNA4stVNhhpTYlxZAoGBAK76IABz4ICqf3TpX5zZ
+        qDHLp8o92oUscwa5wAfWvzUh11RfdkpdQkCOTwzc435OG8QDglbXIhKNdQ07Q/a1
+        kYKMeMAKndJ44ULzHDRNgZrnZXSnxjOxuhBwh7zL3mCAVztfSRobX7+9d+fWBn3e
+        rWkNGo+j4sd1ipR0LsffEJGB
+      public-key: |-
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6zqwokgDtcmNGYSqhWa3
+        ZnBaKCgrib69ugFfXLDN0xH4YCdrnmgcVHxgx8NTgW/n9Mfz9BSBCTjSPggNGBZt
+        Bv9iryU/lM36DgpNj+KsSvl+s+sahcMmMg0ddSPYcNYjCUtYjbO1Vt66P+54JvCa
+        5y5G8NlLgq2sbjnsFUo/EdyiImDSAN505gi19umDPV29FsNC9cE8MAAX7SaWVfhG
+        td4h2SMzyDYJNShV4BacC+/ls42kelirh47Hmvgb4roPMPLm9czot0EPjLBGQzLv
+        HsuupGYRfJaEPVn61KM2EUgqKRqbXDgLl1jsKy1xLzcXxXqO2pX3gMzVGb6xE/qI
+        4wIDAQAB

@@ -1,8 +1,7 @@
 package com.authprovider.model;
 
-import com.authprovider.dto.UserResponseDTO;
+import com.authprovider.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,13 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,6 +45,14 @@ public class User implements UserDetails {
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
   private List<Client> clients = new ArrayList<>();
+
+  @JsonIgnore
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "tokenSubject")
+  private List<Token> tokens = new ArrayList<>();
+
+  public List<Client> getClients() {
+    return clients;
+  }
 
   public List<Role> getRoles() {
     return roles;
@@ -97,8 +102,8 @@ public class User implements UserDetails {
     return true;
   }
 
-  public UserResponseDTO toResponseDTO() {
-    return new UserResponseDTO(this.id, this.email, this.getRoles());
+  public UserDTO toResponseDTO() {
+    return new UserDTO(this.id, this.email, this.getRoles());
   }
 
   public String getId() {

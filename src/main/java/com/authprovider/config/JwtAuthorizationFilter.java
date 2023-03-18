@@ -1,35 +1,32 @@
 package com.authprovider.config;
 
-import com.authprovider.dto.UserResponseDTO;
-import com.authprovider.exceptions.UserNotFound;
-import com.authprovider.model.User;
-import com.authprovider.service.JWTService;
-import com.authprovider.service.UserService;
+import com.authprovider.dto.UserDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import org.jose4j.jwt.JwtClaims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.WebUtils;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
   private final Set<String> whitelistedRoutes = new HashSet<>(
-    Set.of("/api/auth/login", "/api/auth/register", "/api/roles")
+    List.of(
+      "/api/auth/login",
+      "/api/auth/register",
+      "/api/roles",
+      "/api/test",
+      "/api/oauth2/token"
+    )
   );
 
   @Autowired
@@ -52,8 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
       return;
     }
-    UserResponseDTO user = authUtil.extractUser(request);
-
+    UserDTO user = authUtil.extractUser(request);
     // if there's no valid jwt
     if (
       user != null &&
@@ -73,6 +69,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
       // pass the token to security context
       SecurityContextHolder.getContext().setAuthentication(authToken);
+    } else if (user == null) {
+      final String redirectURL = request.getQueryString() != null
+        ? request
+          .getRequestURL()
+          .append('?')
+          .append(request.getQueryString())
+          .toString()
+        : request.getRequestURL().toString();
+
+      response.sendRedirect(UrlTracker.loginPage + "?redirect=" + redirectURL);
     }
     filterChain.doFilter(request, response);
   }
