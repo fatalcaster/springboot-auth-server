@@ -13,7 +13,7 @@ public class RoleRequestDTO {
   }
 
   public void setName(String name) {
-    this.name = name.toLowerCase();
+    this.name = name.toUpperCase();
   }
 
   public Role toRole() {

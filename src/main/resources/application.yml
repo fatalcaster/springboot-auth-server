@@ -1,5 +1,5 @@
 server:
-  port: 3000
+  port: 5000
   error:
     include-message: always
     include-binding-errors: always
@@ -19,7 +19,7 @@ spring:
   jpa:
     hibernate:
       generate-ddl: true
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -29,8 +29,7 @@ spring:
     web-application-type: servlet
 security:
   jwt-key-set:
-    -
-      key-id: test1
+    - key-id: test1
       private-key: |-
         MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrOrCiSAO1yY0Z
         hKqFZrdmcFooKCuJvr26AV9csM3TEfhgJ2ueaBxUfGDHw1OBb+f0x/P0FIEJONI+
@@ -66,8 +65,7 @@ security:
         td4h2SMzyDYJNShV4BacC+/ls42kelirh47Hmvgb4roPMPLm9czot0EPjLBGQzLv
         HsuupGYRfJaEPVn61KM2EUgqKRqbXDgLl1jsKy1xLzcXxXqO2pX3gMzVGb6xE/qI
         4wIDAQAB
-    -
-      key-id: test2
+    - key-id: test2
       private-key: |-
         MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrOrCiSAO1yY0Z
         hKqFZrdmcFooKCuJvr26AV9csM3TEfhgJ2ueaBxUfGDHw1OBb+f0x/P0FIEJONI+

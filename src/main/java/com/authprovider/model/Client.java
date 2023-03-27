@@ -3,11 +3,13 @@ package com.authprovider.model;
 import com.authprovider.dto.ClientDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -33,8 +35,16 @@ public class Client {
   @JoinColumn(name = "user_id", nullable = false)
   private User owner;
 
-  @OneToMany(mappedBy = "tokenProvider", fetch = FetchType.LAZY)
+  @OneToMany(
+    mappedBy = "tokenProvider",
+    fetch = FetchType.LAZY,
+    cascade = CascadeType.REMOVE
+  )
   private List<Token> tokenLists;
+
+  // @ManyToMany(fetch = FetchType.LAZY)
+  // @JoinColumn(name = "user_id")
+  // private List<User> clientList;
 
   public User getOwner() {
     return owner;

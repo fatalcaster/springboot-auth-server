@@ -2,6 +2,7 @@ package com.authprovider.model;
 
 import com.authprovider.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,7 +44,11 @@ public class User implements UserDetails {
   )
   private List<Role> roles = new ArrayList<>();
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+  @OneToMany(
+    fetch = FetchType.LAZY,
+    mappedBy = "owner",
+    cascade = CascadeType.REMOVE
+  )
   private List<Client> clients = new ArrayList<>();
 
   @JsonIgnore

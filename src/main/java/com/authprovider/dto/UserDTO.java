@@ -6,9 +6,12 @@ import com.authprovider.service.jwt.IJwtDto;
 import com.authprovider.service.jwt.JwtPayload;
 import com.authprovider.service.jwt.TokenType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import javax.management.RuntimeErrorException;
 import org.jose4j.jwt.MalformedClaimException;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -24,6 +27,12 @@ public class UserDTO implements IJwtDto {
     this.id = id;
     this.email = email;
     assignRoles(roles);
+  }
+
+  public UserDTO(String id, String email, String roles) {
+    this.id = id;
+    this.email = email;
+    assignRoles(Arrays.asList(roles.split(" ")));
   }
 
   private void assignRoles(List<? extends Object> roles) {
@@ -59,9 +68,9 @@ public class UserDTO implements IJwtDto {
     this.email = email;
   }
 
-  public UserDTO(String id, String email) {
+  public UserDTO(String id, String roles) {
     this.id = id;
-    this.email = email;
+    assignRoles(Arrays.asList(roles.split(" ")));
   }
 
   public String getId() {
@@ -70,6 +79,11 @@ public class UserDTO implements IJwtDto {
 
   public String getEmail() {
     return email;
+  }
+
+  @JsonIgnore
+  public Collection<GrantedAuthority> getAuthorities() {
+    return this.roles;
   }
 
   public List<String> getRoles() {
@@ -87,6 +101,7 @@ public class UserDTO implements IJwtDto {
     try {
       this.fromJwtPayload(payload);
     } catch (Exception e) {
+      System.out.println(e);
       throw new InternalError();
     }
   }
@@ -95,20 +110,17 @@ public class UserDTO implements IJwtDto {
   public void fromJwtPayload(JwtPayload payload)
     throws MalformedClaimException {
     this.id = payload.getSubject();
-    this.email = payload.getSubjectEmail();
-    assignRoles(payload.getStringListClaimValue("roles"));
+    assignRoles(payload.getScope());
   }
 
   @Override
   public JwtPayload toJwtPayload(TokenType tokenType) {
-    JwtPayload payload = new JwtPayload(
+    return new JwtPayload(
       UrlTracker.issuer,
       UrlTracker.issuer,
       getId(),
-      getEmail(),
+      getRoles(),
       tokenType
     );
-    payload.setStringListClaim("roles", getRoles());
-    return payload;
   }
 }

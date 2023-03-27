@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.FORBIDDEN, reason = "Not authorized")
-public class Unauthorized extends RuntimeException {
+public class NotAuthorized extends RuntimeException {
 
-  public Unauthorized() {
+  public NotAuthorized() {
     super();
   }
 
-  public Unauthorized(String message) {
+  public NotAuthorized(String message) {
     super(message);
   }
 }

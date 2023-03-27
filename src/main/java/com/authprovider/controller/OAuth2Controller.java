@@ -1,17 +1,15 @@
 package com.authprovider.controller;
 
 import com.authprovider.config.AuthUtil;
-import com.authprovider.config.UrlTracker;
 import com.authprovider.dto.UserDTO;
 import com.authprovider.dto.oauth2.AccessTokenResponse;
 import com.authprovider.dto.oauth2.AuthorizationDTO;
 import com.authprovider.dto.oauth2.ClientTokenRequestDTO;
 import com.authprovider.dto.oauth2.GrantType;
-import com.authprovider.dto.oauth2.JwtContent;
 import com.authprovider.exceptions.BadRequest;
 import com.authprovider.exceptions.ClientNotFound;
 import com.authprovider.exceptions.InternalError;
-import com.authprovider.exceptions.Unauthorized;
+import com.authprovider.exceptions.NotAuthorized;
 import com.authprovider.exceptions.UserNotFound;
 import com.authprovider.model.Client;
 import com.authprovider.model.Token;
@@ -19,22 +17,19 @@ import com.authprovider.model.User;
 import com.authprovider.service.ClientService;
 import com.authprovider.service.TokenService;
 import com.authprovider.service.UserService;
-import com.authprovider.service.jwt.JwtPayload;
 import com.authprovider.service.jwt.JwtService;
 import com.authprovider.service.jwt.TokenPair;
-import com.authprovider.service.jwt.TokenType;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import org.checkerframework.checker.units.qual.A;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping(value = "/api/oauth2")
@@ -57,7 +52,7 @@ public class OAuth2Controller {
   AuthUtil authUtil;
 
   @GetMapping(value = "/authorize")
-  public void authorize(
+  public String authorize(
     @Valid AuthorizationDTO data,
     HttpServletResponse response
   ) {
@@ -76,20 +71,31 @@ public class OAuth2Controller {
       )
       .orElseThrow(UserNotFound::new);
 
+    if (
+      !user.isAccountNonExpired() ||
+      !user.isAccountNonLocked() ||
+      !user.isCredentialsNonExpired()
+    ) {
+      throw new NotAuthorized("The account is either expired or locked");
+    }
+
     Token token = new Token();
     token.setTokenProvider(client);
     token.setScope(data.getScope());
     token.setTokenSubject(user);
+    token.setExpiresAt(
+      LocalDateTime.now().plusMinutes(30).toEpochSecond(ZoneOffset.UTC)
+    );
 
     tokenService.saveToken(token);
-
-    String redirectUrl = data.getRedirectUri() + "?code=" + token.getId();
-
-    try {
-      response.sendRedirect(redirectUrl);
-    } catch (IOException e) {
-      throw new InternalError();
-    }
+    return data.getRedirectUri() + "?code=" + token.getId();
+    // try {
+    // response.setStatus(200);
+    // response.sendRedirect(redirectUrl);
+    // } catch (IOException e) {
+    // System.out.println(e);
+    // throw new InternalError();
+    // }
   }
 
   @PostMapping(value = "/token")
@@ -120,8 +126,10 @@ public class OAuth2Controller {
     Token token = tokenService.getToken(token_id).orElse(null);
 
     if (!tokenService.isTokenValid(token)) {
-      throw new Unauthorized(
-        "The provided token is either missing expired or revoked."
+      throw new NotAuthorized(
+        "The provided token is either missing expired or revoked. " +
+        token.isNonExpired() +
+        token.getIsNonRevoked()
       );
     }
 
@@ -132,7 +140,7 @@ public class OAuth2Controller {
         token
       )
     ) {
-      throw new Unauthorized("You did not provide this token");
+      throw new NotAuthorized("You did not provide this token");
     }
 
     AccessTokenResponse response = processTokenResponse(
@@ -153,7 +161,7 @@ public class OAuth2Controller {
   ) {
     AccessTokenResponse response = new AccessTokenResponse();
 
-    JwtContent jwt = new JwtContent(
+    UserDTO jwt = new UserDTO(
       user.getId(),
       owner.getId().toString(),
       token.getScope()
@@ -183,8 +191,9 @@ public class OAuth2Controller {
 
     Token token = tokenService.getToken(token_id).orElse(null);
 
+    // checks if the token is null, revoked or expired
     if (!tokenService.isTokenValid(token)) {
-      throw new Unauthorized(
+      throw new NotAuthorized(
         "The provided token is either missing expired or revoked."
       );
     }
@@ -196,7 +205,7 @@ public class OAuth2Controller {
         token
       )
     ) {
-      throw new Unauthorized("You did not provide this token");
+      throw new NotAuthorized("You did not provide this token");
     }
 
     return processTokenResponse(

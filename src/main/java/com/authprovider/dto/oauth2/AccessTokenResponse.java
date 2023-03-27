@@ -1,12 +1,13 @@
 package com.authprovider.dto.oauth2;
 
+import com.authprovider.dto.SecureCookie;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccessTokenResponse {
 
   private String accessToken;
 
-  @JsonProperty("access_token")
+  @JsonProperty(SecureCookie.accessTokenKey)
   public String getAccessToken() {
     return accessToken;
   }
@@ -17,7 +18,7 @@ public class AccessTokenResponse {
 
   private String refreshToken;
 
-  @JsonProperty("refresh_token")
+  @JsonProperty(SecureCookie.refreshTokenKey)
   public String getRefreshToken() {
     return refreshToken;
   }

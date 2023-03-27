@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,10 @@ public class UserService implements IUserService {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  public List<User> getAllUsers() {
-    return userRepo.findAll();
+  private static final int PAGE_SIZE = 20;
+
+  public List<User> getAllUsers(int page) {
+    return userRepo.findAll(PageRequest.of(page, PAGE_SIZE)).toList();
   }
 
   public void saveUser(User user) {
@@ -42,7 +45,7 @@ public class UserService implements IUserService {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
 
     Role userRole = roleRepo
-      .findByName("user")
+      .findByName("ROLE_USER")
       .orElseThrow(BasicRoleNotDefined::new);
     user.getRoles().add(userRole);
     userRepo.save(user);
@@ -63,6 +66,7 @@ public class UserService implements IUserService {
       .findById(UUID.fromString(id))
       .orElseThrow(UserNotFound::new);
     user.getRoles().add(role);
+    userRepo.save(user);
   }
 
   @Override

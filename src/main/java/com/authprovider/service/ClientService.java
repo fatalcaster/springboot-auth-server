@@ -45,4 +45,9 @@ public class ClientService implements IClientService {
   public boolean secretsMatch(String secret, String hashedSecret) {
     return secretEncoder.matches(secret, hashedSecret);
   }
+
+  @Override
+  public void deleteClient(String clientId) {
+    clientRepo.deleteById(UUID.fromString(clientId));
+  }
 }

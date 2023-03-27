@@ -1,6 +1,7 @@
 package com.authprovider.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,6 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,14 +66,21 @@ public class Token {
     this.tokenProvider = tokenProvider;
   }
 
-  private boolean isNonExpired = true;
+  private long expiresAt = 0;
 
-  public boolean getIsNonExpired() {
-    return isNonExpired;
+  public long getExpiresAt() {
+    return expiresAt;
   }
 
-  public void setIsNonExpired(boolean isNonExpired) {
-    this.isNonExpired = isNonExpired;
+  public void setExpiresAt(long expiresAt) {
+    this.expiresAt = expiresAt;
+  }
+
+  public boolean isNonExpired() {
+    Clock clock = Clock.systemUTC();
+    long unixTime = Instant.now(clock).getEpochSecond();
+    System.out.println(expiresAt + " " + unixTime);
+    return expiresAt > unixTime;
   }
 
   private boolean isNonRevoked = true;

@@ -11,4 +11,5 @@ public interface IClientService {
   Optional<Client> getClientById(String clientId);
   Client saveClient(Client client);
   boolean secretsMatch(String secret, String hashedSecret);
+  void deleteClient(String clientId);
 }

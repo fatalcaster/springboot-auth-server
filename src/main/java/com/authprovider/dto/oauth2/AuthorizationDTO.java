@@ -10,11 +10,6 @@ import org.springframework.data.annotation.Transient;
 
 public class AuthorizationDTO {
 
-  @Autowired
-  @JsonIgnore
-  @Transient
-  private ScopeSet availableScopes;
-
   @NotBlank
   @Pattern(regexp = "^(code)$")
   private String responseType;
@@ -49,10 +44,10 @@ public class AuthorizationDTO {
     this.redirectUri = redirectUri;
   }
 
-  private String scope;
+  private String scope = "";
 
   public void setScope(String scopeString) {
-    if (!availableScopes.containsScopeString(scopeString)) {
+    if (!ScopeSet.containsScopeString(scopeString)) {
       throw new BadRequest("Invalid scope");
     }
     scope += scopeString + " ";

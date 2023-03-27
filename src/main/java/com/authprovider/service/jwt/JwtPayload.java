@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.security.Key;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.Optional;
 import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
 import org.jose4j.jwk.RsaJsonWebKey;
@@ -22,6 +23,12 @@ public class JwtPayload extends JwtClaims {
 
   private TokenType tokenType;
 
+  private List<String> scope;
+
+  public List<String> getScope() {
+    return scope;
+  }
+
   @JsonIgnore
   public TokenType getTokenType() {
     return tokenType;
@@ -35,24 +42,15 @@ public class JwtPayload extends JwtClaims {
     String issuer,
     String audience,
     String subject,
+    List<String> scope,
     TokenType tokenType
   ) {
     this.setIssuer(issuer);
     this.setAudience(audience);
     this.setSubject(subject);
     this.setTokenType(tokenType);
+    this.scope = scope;
     this.setExpirationTimeMinutesInTheFuture(0); // security measure
-  }
-
-  public JwtPayload(
-    String issuer,
-    String audience,
-    String subjectId,
-    String subjectEmail,
-    TokenType tokenType
-  ) {
-    this(issuer, audience, subjectId, tokenType);
-    this.setClaim("email", subjectEmail);
   }
 
   public void issue() {
@@ -67,19 +65,13 @@ public class JwtPayload extends JwtClaims {
     this.setIssuedAtToNow();
   }
 
-  public String getSubjectEmail() throws MalformedClaimException {
-    Object email = this.getClaimValue("email");
-    if (email == null) throw new MalformedClaimException(
-      "Payload is missing email field"
-    );
-    return email.toString();
-  }
-
   public static Optional<JwtPayload> buildFromToken(
     String token,
     RSAPublicKey publicKey,
     String audience
   ) {
+    if (publicKey == null) return Optional.empty();
+
     JwtConsumer jwtConsumer = new JwtConsumerBuilder()
       .setRequireSubject()
       .setRequireExpirationTime()
@@ -99,14 +91,14 @@ public class JwtPayload extends JwtClaims {
         claims.getIssuer(),
         claims.getAudience().get(0),
         claims.getSubject(),
-        claims.getClaimValueAsString("email"),
+        claims.getStringListClaimValue("scope"),
         TokenType.ACCESS_TOKEN
       );
       //  Validate the JWT and process it to the Claims
       return Optional.of(payload);
     } catch (Exception e) {
-      throw new RuntimeException(e);
-      // return Optional.empty();
+      // throw new RuntimeException(e);
+      return Optional.empty();
     }
   }
 
@@ -134,6 +126,7 @@ public class JwtPayload extends JwtClaims {
     // In this example it is a JWS so we create a JsonWebSignature object.
     JsonWebSignature jws = new JsonWebSignature();
 
+    setStringListClaim("scope", scope);
     payload.issue();
     jws.setPayload(payload.toJson());
 

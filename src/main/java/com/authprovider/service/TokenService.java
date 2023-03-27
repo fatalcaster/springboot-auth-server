@@ -1,9 +1,7 @@
 package com.authprovider.service;
 
-import com.authprovider.dto.ClientDTO;
 import com.authprovider.model.Client;
 import com.authprovider.model.Token;
-import com.authprovider.model.User;
 import com.authprovider.repo.TokenRepo;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,7 +29,7 @@ public class TokenService implements ITokenService {
 
   @Override
   public boolean isTokenValid(Token token) {
-    if (token == null || !token.getIsNonExpired() || !token.getIsNonRevoked()) {
+    if (token == null || !token.isNonExpired() || !token.getIsNonRevoked()) {
       return false;
     }
     return true;
@@ -58,7 +56,7 @@ public class TokenService implements ITokenService {
 
   @Override
   public void setExpiredAndSave(Token token) {
-    token.setIsNonExpired(false);
+    token.setExpiresAt(953607800); // time in the past, unix representation in seconds
     saveToken(token);
   }
 }

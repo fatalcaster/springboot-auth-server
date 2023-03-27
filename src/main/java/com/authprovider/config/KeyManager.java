@@ -5,6 +5,7 @@ import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -27,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "security")
 public class KeyManager {
 
-  private static final Random RANDOM = new Random();
+  private static final Random RANDOM = new SecureRandom();
 
   // private static Logger logger = LoggerFactory.getLogger(KeyManager.class);
 

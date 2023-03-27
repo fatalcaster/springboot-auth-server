@@ -8,7 +8,7 @@ public class ClientDTO {
   @JsonProperty("client_id")
   private String id;
 
-  @JsonProperty("is_non_expired")
+  @JsonProperty("non_expired")
   private boolean isNonExpired;
 
   public boolean getIsNonExpired() {
