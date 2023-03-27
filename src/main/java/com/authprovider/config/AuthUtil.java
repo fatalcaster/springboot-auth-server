@@ -6,7 +6,9 @@ import com.authprovider.dto.internal.Keystore;
 import com.authprovider.service.jwt.JwtPayload;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
@@ -17,22 +19,40 @@ public class AuthUtil {
   KeyManager keyManager;
 
   public UserDTO extractUser(HttpServletRequest request) {
-    Cookie cookie = WebUtils.getCookie(request, SecureCookie.accessTokenKey);
-    if (cookie == null) return null;
-    String kid = JwtPayload.extractKid(cookie.getValue());
+    // Cookie cookie = WebUtils.getCookie(request, SecureCookie.accessTokenKey);
+    System.out.println(request.getHeaderNames());
+    String token = request.getHeader(SecureCookie.AuthorizationHeader);
+    if (token == null) {
+      return null;
+    }
 
-    Keystore keystore = keyManager.getJwtKeys(kid).orElse(null);
+    Keystore keystore = parseKeystore(token).orElse(null);
 
     if (keystore == null) return null;
+
     JwtPayload jwtPayload = JwtPayload
-      .buildFromToken(
-        cookie.getValue(),
-        keystore.getPublicKey(),
-        UrlTracker.issuer
-      )
+      .buildFromToken(token, keystore.getPublicKey(), UrlTracker.issuer)
       .orElse(null);
     if (jwtPayload == null) return null;
 
     return new UserDTO(jwtPayload);
+  }
+
+  public Optional<Keystore> parseKeystore(String token) {
+    if (token == null) return Optional.empty();
+
+    String kid = JwtPayload.extractKid(token);
+
+    Keystore keystore = keyManager.getJwtKeys(kid).orElse(null);
+
+    if (keystore == null) return Optional.empty();
+    return Optional.of(keystore);
+  }
+
+  public UserDTO getAuthorizedUser() {
+    return (UserDTO) SecurityContextHolder
+      .getContext()
+      .getAuthentication()
+      .getPrincipal();
   }
 }
