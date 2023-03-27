@@ -20,13 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
   private final Set<String> whitelistedRoutes = new HashSet<>(
-    List.of(
-      "/api/auth/login",
-      "/api/auth/register",
-      "/api/roles",
-      "/api/test",
-      "/api/oauth2/token"
-    )
+    List.of("/api/auth/login", "/api/auth/register", "/api/oauth2/token")
   );
 
   @Autowired
@@ -50,6 +44,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       return;
     }
     UserDTO user = authUtil.extractUser(request);
+
     // if there's no valid jwt
     if (
       user != null &&
@@ -61,6 +56,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         null,
         user.getGrantedAuthorities()
       );
+      // String authorities = user
+      //   .getAuthorities()
+      //   .stream()
+      //   .map(GrantedAuthority::getAuthority)
+      //   .collect(Collectors.joining());
 
       // get details from request
       authToken.setDetails(
@@ -69,17 +69,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
       // pass the token to security context
       SecurityContextHolder.getContext().setAuthentication(authToken);
-    } else if (user == null) {
-      final String redirectURL = request.getQueryString() != null
-        ? request
-          .getRequestURL()
-          .append('?')
-          .append(request.getQueryString())
-          .toString()
-        : request.getRequestURL().toString();
-
-      response.sendRedirect(UrlTracker.loginPage + "?redirect=" + redirectURL);
     }
+    // else if (user == null) {
+    // final String redirectURL = request.getQueryString() != null
+    // ? request
+    // .getRequestURL()
+    // .append('?')
+    // .append(request.getQueryString())
+    // .toString()
+    // : request.getRequestURL().toString();
+    // response.sendRedirect(UrlTracker.loginPage + "?redirect=" + redirectURL);
+    // System.out.println("NEMA ME");
+    // }
     filterChain.doFilter(request, response);
   }
 }
