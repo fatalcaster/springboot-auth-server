@@ -5,15 +5,14 @@ import java.time.Duration;
 
 public class SecureCookie extends Cookie {
 
-  public static final String accessTokenKey = "access_token";
   public static final String refreshTokenKey = "refresh_token";
   public static final String AuthorizationHeader = "Authorization";
 
   public SecureCookie(String name, String value) {
     super(name, value);
-    this.setHttpOnly(false);
+    this.setHttpOnly(true);
     this.setPath("/");
-    this.setSecure(false);
+    this.setSecure(true);
     this.setMaxAge((int) Duration.ofDays(60).toSeconds());
   }
 

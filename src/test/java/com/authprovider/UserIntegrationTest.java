@@ -112,9 +112,6 @@ public class UserIntegrationTest {
           .contentType(MediaType.APPLICATION_JSON)
           .content(reqContent)
       )
-      .andExpect(MockMvcResultMatchers.status().isOk())
-      .andExpect(
-        MockMvcResultMatchers.cookie().exists(SecureCookie.accessTokenKey)
-      );
+      .andExpect(MockMvcResultMatchers.status().isOk());
   }
 }

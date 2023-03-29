@@ -94,12 +94,12 @@ public class AuthController {
         SecureCookie.refreshTokenKey,
         tokens.getRefreshToken()
       );
-      SecureCookie accessCookie = new SecureCookie(
-        SecureCookie.accessTokenKey,
-        tokens.getAccessToken()
-      );
+      // SecureCookie accessCookie = new SecureCookie(
+      //   SecureCookie.accessTokenKey,
+      //   tokens.getAccessToken()
+      // );
 
-      response.addCookie(accessCookie);
+      // response.addCookie(accessCookie);
       response.addCookie(refreshCookie);
       response.addHeader("Set-Cookie", "key=value; HttpOnly; SameSite=Strict");
       if (redirectUri.isPresent()) {
@@ -114,16 +114,12 @@ public class AuthController {
   }
 
   @ResponseStatus(code = HttpStatus.OK)
-  @GetMapping("/refresh")
-  public void refreshToken(
+  @PostMapping("/refresh")
+  public String refreshToken(
     HttpServletRequest request,
     HttpServletResponse response
   ) {
-    SecureCookie cookie = (SecureCookie) WebUtils.getCookie(
-      request,
-      SecureCookie.refreshTokenKey
-    );
-
+    Cookie cookie = WebUtils.getCookie(request, SecureCookie.refreshTokenKey);
     if (cookie == null) {
       throw new NotAuthorized();
     }
@@ -144,32 +140,13 @@ public class AuthController {
       .orElseThrow(() -> new NotAuthorized("Invalid JWT"));
 
     // todo: check if the db contains the token that has been revoked
+
     try {
       jwtPayload.setTokenType(TokenType.ACCESS_TOKEN);
-      SecureCookie accessCokie = new SecureCookie(
-        SecureCookie.accessTokenKey,
-        jwtPayload.issueAndConvertToToken(jwtPayload, keystore)
-      );
-      response.addCookie(accessCokie);
+      return jwtPayload.issueAndConvertToToken(jwtPayload, keystore);
     } catch (Exception e) {
       System.err.println(e);
       throw new InternalError();
     }
   }
 }
-//   @ResponseStatus(code = HttpStatus.OK)
-//   @PostMapping("/logout")
-//   public void logoutUser(
-//     HttpServletRequest request,
-//     HttpServletResponse response
-//   ) {
-//     for (Cookie cookie : request.getCookies()) {
-//       System.out.println(cookie.getName());
-//       String cookieName = cookie.getName();
-//       Cookie cookieToDelete = new Cookie(cookieName, null);
-//       cookieToDelete.setMaxAge(0);
-//       response.addCookie(cookieToDelete);
-//     }
-//     response.setHeader("Access-Control-Allow-Origin", "*");
-//   }
-// }

@@ -7,7 +7,7 @@ public class AccessTokenResponse {
 
   private String accessToken;
 
-  @JsonProperty(SecureCookie.accessTokenKey)
+  @JsonProperty("access_token")
   public String getAccessToken() {
     return accessToken;
   }

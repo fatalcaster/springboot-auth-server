@@ -1,8 +1,6 @@
 package com.authprovider.config;
 
 import com.authprovider.dto.SecureCookie;
-import jakarta.servlet.http.Cookie;
-import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -42,7 +37,7 @@ public class ApplicationSecurity {
           .addMapping("/**")
           .allowedOrigins("http://localhost:3000")
           .allowCredentials(true)
-          .allowedMethods("GET", "POST", "DELETE");
+          .allowedMethods("GET", "POST", "DELETE", "PUT");
       }
     };
   }
@@ -61,10 +56,9 @@ public class ApplicationSecurity {
       .authorizeHttpRequests()
       .requestMatchers(
         "/api/auth/**",
-        // "/api/roles",
-        // "/api/test",
-        "/api/oauth2/token"
-        // "/api/oauth2/authorize"
+        "/api/oauth2/token",
+        "/api/auth/refresh",
+        "/api/auth/logout"
       )
       .permitAll()
       .anyRequest()
@@ -80,17 +74,13 @@ public class ApplicationSecurity {
         .logoutUrl("/api/auth/logout")
         .addLogoutHandler(
           new CookieClearingLogoutHandler(
-            SecureCookie.delete(SecureCookie.accessTokenKey),
             SecureCookie.delete(SecureCookie.refreshTokenKey)
           )
         )
         .logoutSuccessHandler(
           (new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
         )
-        .deleteCookies(
-          SecureCookie.accessTokenKey,
-          SecureCookie.refreshTokenKey
-        )
+        .deleteCookies(SecureCookie.refreshTokenKey)
         .logoutSuccessUrl("http://localhost:3000")
     );
 

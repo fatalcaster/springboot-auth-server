@@ -98,6 +98,7 @@ public class JwtPayload extends JwtClaims {
       return Optional.of(payload);
     } catch (Exception e) {
       // throw new RuntimeException(e);
+      System.err.println(e);
       return Optional.empty();
     }
   }
