@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-provider-client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-provider-client
+  template:
+    metadata:
+      labels:
+        app: auth-provider-client
+    spec:
+      containers:
+        - name: auth-provider-client
+          image: milovicvojin/auth-provider-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-provider-client-srv
+spec:
+  selector:
+    app: auth-provider-client
+  ports:
+    - name: auth-provider-client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

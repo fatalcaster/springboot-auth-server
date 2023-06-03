@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-provider-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-provider
+  template:
+    metadata:
+      labels:
+        app: auth-provider
+    spec:
+      containers:
+        - name: auth-provider
+          image: milovicvojin/auth-provider
+          env:
+            - name: JWT_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-private-secret
+                  key: JWT_ACCESS_TOKEN
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-provider-srv
+spec:
+  selector:
+    app: auth-provider
+  ports:
+    - name: auth-provider
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
