@@ -15,6 +15,17 @@ public class ClientDTO {
     return isNonExpired;
   }
 
+  @JsonProperty("client_name")
+  private String clientName;
+
+  public String getClientName() {
+    return clientName;
+  }
+
+  public void setClientName(String clientName) {
+    this.clientName = clientName;
+  }
+
   public void setIsNonExpired(boolean isNonExpired) {
     this.isNonExpired = isNonExpired;
   }
@@ -48,18 +59,26 @@ public class ClientDTO {
     this.owner = owner;
   }
 
-  public ClientDTO(String clientId, String ownerId, boolean isNonExpired) {
+  public ClientDTO(
+    String clientName,
+    String clientId,
+    String ownerId,
+    boolean isNonExpired
+  ) {
+    this.clientName = clientName;
     this.id = clientId;
     this.owner = ownerId;
     this.isNonExpired = isNonExpired;
   }
 
   public ClientDTO(
+    String clientName,
     String clientId,
     String ownerId,
     String secret,
     boolean isExpired
   ) {
+    this.clientName = clientName;
     this.id = clientId;
     this.owner = ownerId;
     this.secret = Optional.of(secret);

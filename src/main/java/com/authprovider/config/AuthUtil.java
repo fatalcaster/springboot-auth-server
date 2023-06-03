@@ -17,7 +17,7 @@ public class AuthUtil {
   KeyManager keyManager;
 
   public UserDTO extractUser(HttpServletRequest request) {
-    String token = request.getHeader(SecureCookie.AuthorizationHeader);
+    String token = request.getHeader(SecureCookie.AUTHORIZATION_HEADER);
     if (token == null) {
       return null;
     }

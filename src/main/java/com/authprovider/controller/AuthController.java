@@ -6,6 +6,7 @@ import com.authprovider.dto.SecureCookie;
 import com.authprovider.dto.UserCredDTO;
 import com.authprovider.dto.UserDTO;
 import com.authprovider.dto.internal.Keystore;
+import com.authprovider.exceptions.Forbidden;
 import com.authprovider.exceptions.InternalError;
 import com.authprovider.exceptions.NotAuthorized;
 import com.authprovider.exceptions.UserNotFound;
@@ -22,7 +23,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +37,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.WebUtils;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "accounts.codedepo.com", allowCredentials = "true")
 @RequestMapping("/api/auth")
 @RestController
 public class AuthController {
@@ -56,16 +59,20 @@ public class AuthController {
   public String registerUser(
     @Valid @RequestBody(required = true) UserCredDTO user
   ) {
+    System.out.println("PROSAO JESAM AL NMP STA JE");
     User newUser = user.toUser();
 
-    service.saveUser(newUser);
+    try {
+      service.saveUser(newUser);
+    } catch (Error e) {
+      System.out.println(e);
+    }
     return newUser.getUsername();
   }
 
   @PostMapping("/login")
   public UserDTO loginUser(
     @Valid @RequestBody(required = true) UserCredDTO userDto,
-    @RequestParam Optional<String> redirectUri,
     HttpServletResponse response
   ) {
     User user = service
@@ -86,29 +93,19 @@ public class AuthController {
     }
 
     UserDTO userResDto = user.toResponseDTO();
-
     try {
       TokenPair tokens = jwtService.createTokenPair(userResDto);
 
-      SecureCookie refreshCookie = new SecureCookie(
-        SecureCookie.refreshTokenKey,
+      final ResponseCookie refreshCookie = SecureCookie.build(
+        SecureCookie.REFRESH_TOKEN_KEY,
         tokens.getRefreshToken()
       );
-      // SecureCookie accessCookie = new SecureCookie(
-      //   SecureCookie.accessTokenKey,
-      //   tokens.getAccessToken()
-      // );
 
-      // response.addCookie(accessCookie);
-      response.addCookie(refreshCookie);
-      response.addHeader("Set-Cookie", "key=value; HttpOnly; SameSite=Strict");
-      if (redirectUri.isPresent()) {
-        String redirectLocation = redirectUri.orElseThrow(InternalError::new);
-        response.sendRedirect(redirectLocation);
-      }
+      response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
       return userResDto;
     } catch (Exception e) {
-      System.err.println(e);
+      System.out.println(e);
       throw new InternalError();
     }
   }
@@ -119,16 +116,15 @@ public class AuthController {
     HttpServletRequest request,
     HttpServletResponse response
   ) {
-    Cookie cookie = WebUtils.getCookie(request, SecureCookie.refreshTokenKey);
+    Cookie cookie = WebUtils.getCookie(request, SecureCookie.REFRESH_TOKEN_KEY);
     if (cookie == null) {
-      throw new NotAuthorized();
+      throw new NotAuthorized("No cookie");
     }
 
     Keystore keystore = authUtil.parseKeystore(cookie.getValue()).orElse(null);
 
     if (keystore == null) {
-      response.addCookie(SecureCookie.delete(SecureCookie.refreshTokenKey));
-      throw new NotAuthorized();
+      throw new Forbidden();
     }
 
     JwtPayload jwtPayload = JwtPayload

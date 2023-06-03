@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class NotAuthorized extends RuntimeException {
 
   public NotAuthorized() {
-    super();
+    super("You're not authorized");
   }
 
   public NotAuthorized(String message) {

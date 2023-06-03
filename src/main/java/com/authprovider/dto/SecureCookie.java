@@ -1,24 +1,23 @@
 package com.authprovider.dto;
 
-import jakarta.servlet.http.Cookie;
 import java.time.Duration;
+import org.springframework.http.ResponseCookie;
 
-public class SecureCookie extends Cookie {
+public class SecureCookie {
 
-  public static final String refreshTokenKey = "refresh_token";
-  public static final String AuthorizationHeader = "Authorization";
+  public static final String REFRESH_TOKEN_KEY = "refresh_token";
+  public static final String AUTHORIZATION_HEADER = "Authorization";
 
-  public SecureCookie(String name, String value) {
-    super(name, value);
-    this.setHttpOnly(true);
-    this.setPath("/");
-    this.setSecure(true);
-    this.setMaxAge((int) Duration.ofDays(60).toSeconds());
-  }
+  private SecureCookie() {}
 
-  public static SecureCookie delete(String key) {
-    SecureCookie cookie = new SecureCookie(key, null);
-    cookie.setMaxAge(0);
-    return cookie;
+  public static ResponseCookie build(String key, String value) {
+    return ResponseCookie
+      .from(key, value)
+      .secure(false)
+      .httpOnly(true)
+      .path("/")
+      .maxAge((int) Duration.ofDays(60).toSeconds())
+      .sameSite("Strict")
+      .build();
   }
 }

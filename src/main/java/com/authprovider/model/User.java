@@ -2,6 +2,7 @@ package com.authprovider.model;
 
 import com.authprovider.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
@@ -22,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "user_entity", schema = "public")
-public class User implements UserDetails {
+public class User extends DateEntity implements UserDetails {
 
   @Id
   @UuidGenerator
@@ -44,6 +46,7 @@ public class User implements UserDetails {
   )
   private List<Role> roles = new ArrayList<>();
 
+  @JsonIgnore
   @OneToMany(
     fetch = FetchType.LAZY,
     mappedBy = "owner",
@@ -59,8 +62,16 @@ public class User implements UserDetails {
     return clients;
   }
 
+  @JsonIgnore
   public List<Role> getRoles() {
     return roles;
+  }
+
+  @JsonProperty("roles")
+  public List<String> getStrRoles() {
+    List<String> rolesStr = new LinkedList<>();
+    this.roles.forEach(role -> rolesStr.add(role.toString()));
+    return rolesStr;
   }
 
   public User() {}
@@ -82,6 +93,7 @@ public class User implements UserDetails {
     this.password = password;
   }
 
+  @JsonIgnore
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return this.roles;
@@ -115,6 +127,7 @@ public class User implements UserDetails {
     return this.id.toString();
   }
 
+  @JsonProperty("email")
   @Override
   public String getUsername() {
     return this.email;

@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import javax.management.RuntimeErrorException;
 import org.jose4j.jwt.MalformedClaimException;
 import org.springframework.security.core.GrantedAuthority;
 

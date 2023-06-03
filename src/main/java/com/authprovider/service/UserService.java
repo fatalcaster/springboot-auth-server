@@ -9,6 +9,7 @@ import com.authprovider.model.Role;
 import com.authprovider.model.User;
 import com.authprovider.repo.RoleRepo;
 import com.authprovider.repo.UserRepo;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +34,7 @@ public class UserService implements IUserService {
   private static final int PAGE_SIZE = 20;
 
   public List<User> getAllUsers(int page) {
-    return userRepo.findAll(PageRequest.of(page, PAGE_SIZE)).toList();
+    return userRepo.findAll(PageRequest.of(page, PAGE_SIZE)).getContent();
   }
 
   public void saveUser(User user) {

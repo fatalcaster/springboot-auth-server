@@ -28,7 +28,7 @@ public class ClientService implements IClientService {
   }
 
   @Override
-  public Client saveClient(Client client) {
+  public Client encodeSecretAndSaveClient(Client client) {
     String secret = client.getSecret();
     client.setSecret(secretEncoder.encode(secret));
     clientRepo.save(client);
@@ -49,5 +49,18 @@ public class ClientService implements IClientService {
   @Override
   public void deleteClient(String clientId) {
     clientRepo.deleteById(UUID.fromString(clientId));
+  }
+
+  @Override
+  public Client saveClient(Client client) {
+    return clientRepo.save(client);
+  }
+
+  @Override
+  public Client updateSecretAndSave(Client client) {
+    String newSecret = UUID.randomUUID().toString();
+    clientRepo.updateSecret(client.getId(), secretEncoder.encode(newSecret));
+    client.setSecret(newSecret);
+    return client;
   }
 }

@@ -1,7 +1,6 @@
 package com.authprovider.model;
 
 import com.authprovider.dto.ClientDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,17 +8,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
-@Table(name = "client", schema = "public")
-public class Client {
+@Table(
+  name = "client",
+  schema = "public",
+  uniqueConstraints = @UniqueConstraint(columnNames = { "id", "name" })
+)
+public class Client extends DateEntity {
 
   @Id
   @UuidGenerator
@@ -27,7 +30,18 @@ public class Client {
   @JsonProperty("client_id")
   private UUID id;
 
-  @Column
+  @Column(name = "name")
+  private String name;
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Column(name = "secret")
   @JsonProperty("client_secret")
   private String secret = UUID.randomUUID().toString();
 
@@ -41,10 +55,6 @@ public class Client {
     cascade = CascadeType.REMOVE
   )
   private List<Token> tokenLists;
-
-  // @ManyToMany(fetch = FetchType.LAZY)
-  // @JoinColumn(name = "user_id")
-  // private List<User> clientList;
 
   public User getOwner() {
     return owner;
@@ -78,6 +88,7 @@ public class Client {
 
   public ClientDTO toClientDto() {
     return new ClientDTO(
+      this.getName(),
       this.id.toString(),
       this.owner.getId(),
       this.getIsNonExpired()
@@ -87,6 +98,7 @@ public class Client {
   public ClientDTO toClientDto(boolean shareSecret) {
     if (shareSecret) {
       return new ClientDTO(
+        this.getName(),
         this.id.toString(),
         this.owner.getId(),
         this.getSecret(),

@@ -57,7 +57,7 @@ public class OAuth2Test {
 
     client = new Client();
     client.setOwner(user);
-    client = clientService.saveClient(client);
+    // client = clientService.saveClient(client);
   }
 
   @Test

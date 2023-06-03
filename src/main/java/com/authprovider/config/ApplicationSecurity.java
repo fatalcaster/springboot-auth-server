@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -35,7 +34,7 @@ public class ApplicationSecurity {
       public void addCorsMappings(CorsRegistry registry) {
         registry
           .addMapping("/**")
-          .allowedOrigins("http://localhost:3000")
+          .allowedOrigins(UrlTracker.frontEndBaseURL)
           .allowCredentials(true)
           .allowedMethods("GET", "POST", "DELETE", "PUT");
       }
@@ -47,7 +46,6 @@ public class ApplicationSecurity {
     HttpSecurity http,
     @Autowired JwtAuthorizationFilter jwtAuthorizationFilter
   ) throws Exception {
-    http.csrf().disable();
     http.cors();
     http
       .sessionManagement()
@@ -72,18 +70,13 @@ public class ApplicationSecurity {
     http.logout(logout ->
       logout
         .logoutUrl("/api/auth/logout")
-        .addLogoutHandler(
-          new CookieClearingLogoutHandler(
-            SecureCookie.delete(SecureCookie.refreshTokenKey)
-          )
-        )
         .logoutSuccessHandler(
           (new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
         )
-        .deleteCookies(SecureCookie.refreshTokenKey)
-        .logoutSuccessUrl("http://localhost:3000")
+        .deleteCookies(SecureCookie.REFRESH_TOKEN_KEY)
+        .logoutSuccessUrl(UrlTracker.frontEndBaseURL)
     );
-
+    http.csrf().disable();
     return http.build();
   }
 }

@@ -18,7 +18,7 @@ public class AccessTokenResponse {
 
   private String refreshToken;
 
-  @JsonProperty(SecureCookie.refreshTokenKey)
+  @JsonProperty(SecureCookie.REFRESH_TOKEN_KEY)
   public String getRefreshToken() {
     return refreshToken;
   }

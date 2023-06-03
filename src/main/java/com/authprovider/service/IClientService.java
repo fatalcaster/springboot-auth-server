@@ -9,6 +9,8 @@ public interface IClientService {
   List<Client> getAllClients();
 
   Optional<Client> getClientById(String clientId);
+  Client encodeSecretAndSaveClient(Client client);
+  Client updateSecretAndSave(Client client);
   Client saveClient(Client client);
   boolean secretsMatch(String secret, String hashedSecret);
   void deleteClient(String clientId);
