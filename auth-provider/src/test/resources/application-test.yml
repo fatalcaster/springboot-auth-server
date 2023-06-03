@@ -1,0 +1,107 @@
+server:
+  port: 3000
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+spring:
+  jackson:
+    mapper:
+      ACCEPT_CASE_INSENSITIVE_PROPERTIES: true
+  datasource:
+    url: jdbc:h2:~/test;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driverClassName: org.h2.Driver
+    initialization-mode: always
+    continue-on-error: true
+  jpa:
+    hibernate:
+      generate-ddl: true
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+
+  main:
+    web-application-type: servlet
+security:
+  jwt-key-set:
+    -
+      key-id: test1
+      private-key: |-
+        MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrOrCiSAO1yY0Z
+        hKqFZrdmcFooKCuJvr26AV9csM3TEfhgJ2ueaBxUfGDHw1OBb+f0x/P0FIEJONI+
+        CA0YFm0G/2KvJT+UzfoOCk2P4qxK+X6z6xqFwyYyDR11I9hw1iMJS1iNs7VW3ro/
+        7ngm8JrnLkbw2UuCraxuOewVSj8R3KIiYNIA3nTmCLX26YM9Xb0Ww0L1wTwwABft
+        JpZV+Ea13iHZIzPINgk1KFXgFpwL7+WzjaR6WKuHjsea+Bviug8w8ub1zOi3QQ+M
+        sEZDMu8ey66kZhF8loQ9WfrUozYRSCopGptcOAuXWOwrLXEvNxfFeo7alfeAzNUZ
+        vrET+ojjAgMBAAECggEAOUqwHrZfgPU4EpEHXzpnTOHsc39lK0VzvEv9R/wgBVqJ
+        HhI72fcNf15TzBO80PfKjQnuVvJvgyl9u3IGjmlX4K5vAK2X0MxiLO1BetwAjro5
+        q+SFLzMaqHIdTJyQaNse6XKafNjaP/A7eLrCNOnBMLFKwfqKs6dNKgOdhonw1o5o
+        vU/5vTf0nOTCcP/Pmp/rETfJ11lPVHimvz8ZWiqnJQ81bybe6V9sS3wP0/9bmZcd
+        whgDPD0NyFzI5IPlTi+ogq5i0lmmGaNanuXORCIup3RoCWt122biMfVjEutXby2Q
+        yfqxPbcVSU5wBoR+Ul+c/kArSCEI7YVhXmR4/7w1sQKBgQD1+cY7Gv54yVMB502H
+        b1NeMWjtOn7M1PpMF2QHbOaEvmE1JBSXyvctWw7k/ZretfXNwLxY3nzsxpFjvVtZ
+        J7Kv9IupRL3GtQWAuR7kMCmlP7qnC4jGzfwIvoIpleVaOLWHRra+NDmJKtM/tjyp
+        i5LHW+7Eptxcmg6nPe2VYOWQ1wKBgQD00MzFlOtoGVoSh3lU584rK78RtjSAxsRP
+        KBHntYXaOJCciwhKEBGi/5c5Ac2CG6akS2IxuCUaX2/hxqIWk49EgtQE7+OIumQI
+        rggss1iJQnxVKP2i2Hup5W3q1kNKPm5DLSLLOBdaOekObyiUNQtSJYaiEelhs1oW
+        UYHC8QBq1QKBgQCx0SQFvGjzxo6UVLMOUmNRN6TjwiLCTsC22z37xDUNB1fcg73D
+        Uf3IMwicb91SXPZaDJfcItLqlE2sbcootHMPkliYQFJ04I4e1TTIvyyMAnsboVH6
+        bhRh+d6801jfFRndtjgLXlOtnmDisQo/gt/T8Ni2Hu40n0Yyjqk/ELJENwKBgCii
+        l7qb807+FkNJFUyQhVoJEtffxGszktYIsqAhMyx7gxVYxnF0pVjGz9T4haH48PoI
+        QS47gH0WJj31eGYC7B7VEFgZcUz6kywVpum0gxeVX4nLGf5zrGMQ3+PA2L50Cl1A
+        GqxcjRO+1P4+WR/whgaGkAhKrNA4stVNhhpTYlxZAoGBAK76IABz4ICqf3TpX5zZ
+        qDHLp8o92oUscwa5wAfWvzUh11RfdkpdQkCOTwzc435OG8QDglbXIhKNdQ07Q/a1
+        kYKMeMAKndJ44ULzHDRNgZrnZXSnxjOxuhBwh7zL3mCAVztfSRobX7+9d+fWBn3e
+        rWkNGo+j4sd1ipR0LsffEJGB
+      public-key: |-
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6zqwokgDtcmNGYSqhWa3
+        ZnBaKCgrib69ugFfXLDN0xH4YCdrnmgcVHxgx8NTgW/n9Mfz9BSBCTjSPggNGBZt
+        Bv9iryU/lM36DgpNj+KsSvl+s+sahcMmMg0ddSPYcNYjCUtYjbO1Vt66P+54JvCa
+        5y5G8NlLgq2sbjnsFUo/EdyiImDSAN505gi19umDPV29FsNC9cE8MAAX7SaWVfhG
+        td4h2SMzyDYJNShV4BacC+/ls42kelirh47Hmvgb4roPMPLm9czot0EPjLBGQzLv
+        HsuupGYRfJaEPVn61KM2EUgqKRqbXDgLl1jsKy1xLzcXxXqO2pX3gMzVGb6xE/qI
+        4wIDAQAB
+    -
+      key-id: test2
+      private-key: |-
+        MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrOrCiSAO1yY0Z
+        hKqFZrdmcFooKCuJvr26AV9csM3TEfhgJ2ueaBxUfGDHw1OBb+f0x/P0FIEJONI+
+        CA0YFm0G/2KvJT+UzfoOCk2P4qxK+X6z6xqFwyYyDR11I9hw1iMJS1iNs7VW3ro/
+        7ngm8JrnLkbw2UuCraxuOewVSj8R3KIiYNIA3nTmCLX26YM9Xb0Ww0L1wTwwABft
+        JpZV+Ea13iHZIzPINgk1KFXgFpwL7+WzjaR6WKuHjsea+Bviug8w8ub1zOi3QQ+M
+        sEZDMu8ey66kZhF8loQ9WfrUozYRSCopGptcOAuXWOwrLXEvNxfFeo7alfeAzNUZ
+        vrET+ojjAgMBAAECggEAOUqwHrZfgPU4EpEHXzpnTOHsc39lK0VzvEv9R/wgBVqJ
+        HhI72fcNf15TzBO80PfKjQnuVvJvgyl9u3IGjmlX4K5vAK2X0MxiLO1BetwAjro5
+        q+SFLzMaqHIdTJyQaNse6XKafNjaP/A7eLrCNOnBMLFKwfqKs6dNKgOdhonw1o5o
+        vU/5vTf0nOTCcP/Pmp/rETfJ11lPVHimvz8ZWiqnJQ81bybe6V9sS3wP0/9bmZcd
+        whgDPD0NyFzI5IPlTi+ogq5i0lmmGaNanuXORCIup3RoCWt122biMfVjEutXby2Q
+        yfqxPbcVSU5wBoR+Ul+c/kArSCEI7YVhXmR4/7w1sQKBgQD1+cY7Gv54yVMB502H
+        b1NeMWjtOn7M1PpMF2QHbOaEvmE1JBSXyvctWw7k/ZretfXNwLxY3nzsxpFjvVtZ
+        J7Kv9IupRL3GtQWAuR7kMCmlP7qnC4jGzfwIvoIpleVaOLWHRra+NDmJKtM/tjyp
+        i5LHW+7Eptxcmg6nPe2VYOWQ1wKBgQD00MzFlOtoGVoSh3lU584rK78RtjSAxsRP
+        KBHntYXaOJCciwhKEBGi/5c5Ac2CG6akS2IxuCUaX2/hxqIWk49EgtQE7+OIumQI
+        rggss1iJQnxVKP2i2Hup5W3q1kNKPm5DLSLLOBdaOekObyiUNQtSJYaiEelhs1oW
+        UYHC8QBq1QKBgQCx0SQFvGjzxo6UVLMOUmNRN6TjwiLCTsC22z37xDUNB1fcg73D
+        Uf3IMwicb91SXPZaDJfcItLqlE2sbcootHMPkliYQFJ04I4e1TTIvyyMAnsboVH6
+        bhRh+d6801jfFRndtjgLXlOtnmDisQo/gt/T8Ni2Hu40n0Yyjqk/ELJENwKBgCii
+        l7qb807+FkNJFUyQhVoJEtffxGszktYIsqAhMyx7gxVYxnF0pVjGz9T4haH48PoI
+        QS47gH0WJj31eGYC7B7VEFgZcUz6kywVpum0gxeVX4nLGf5zrGMQ3+PA2L50Cl1A
+        GqxcjRO+1P4+WR/whgaGkAhKrNA4stVNhhpTYlxZAoGBAK76IABz4ICqf3TpX5zZ
+        qDHLp8o92oUscwa5wAfWvzUh11RfdkpdQkCOTwzc435OG8QDglbXIhKNdQ07Q/a1
+        kYKMeMAKndJ44ULzHDRNgZrnZXSnxjOxuhBwh7zL3mCAVztfSRobX7+9d+fWBn3e
+        rWkNGo+j4sd1ipR0LsffEJGB
+      public-key: |-
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6zqwokgDtcmNGYSqhWa3
+        ZnBaKCgrib69ugFfXLDN0xH4YCdrnmgcVHxgx8NTgW/n9Mfz9BSBCTjSPggNGBZt
+        Bv9iryU/lM36DgpNj+KsSvl+s+sahcMmMg0ddSPYcNYjCUtYjbO1Vt66P+54JvCa
+        5y5G8NlLgq2sbjnsFUo/EdyiImDSAN505gi19umDPV29FsNC9cE8MAAX7SaWVfhG
+        td4h2SMzyDYJNShV4BacC+/ls42kelirh47Hmvgb4roPMPLm9czot0EPjLBGQzLv
+        HsuupGYRfJaEPVn61KM2EUgqKRqbXDgLl1jsKy1xLzcXxXqO2pX3gMzVGb6xE/qI
+        4wIDAQAB
