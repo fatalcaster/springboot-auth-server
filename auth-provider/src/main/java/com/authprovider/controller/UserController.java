@@ -3,6 +3,7 @@ package com.authprovider.controller;
 import com.authprovider.config.AuthUtil;
 import com.authprovider.dto.UserDTO;
 import com.authprovider.exceptions.InternalError;
+import com.authprovider.exceptions.UserNotFound;
 import com.authprovider.model.User;
 import com.authprovider.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,11 @@ public class UserController {
 
   @GetMapping("/me")
   public UserDTO getMe(HttpServletRequest request) {
-    return authUtil.extractUser(request);
+    UserDTO userDto = authUtil.extractUser(request);
+    User user = userService
+      .getUserById(userDto.getId())
+      .orElseThrow(UserNotFound::new);
+    return user.toResponseDTO();
   }
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")

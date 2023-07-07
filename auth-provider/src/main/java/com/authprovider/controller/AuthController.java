@@ -22,6 +22,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,6 +44,10 @@ import org.springframework.web.util.WebUtils;
 @RestController
 public class AuthController {
 
+  private static final Logger LOG = LoggerFactory.getLogger(
+    AuthController.class
+  );
+
   @Autowired
   private UserService service;
 
@@ -59,13 +65,12 @@ public class AuthController {
   public String registerUser(
     @Valid @RequestBody(required = true) UserCredDTO user
   ) {
-    System.out.println("PROSAO JESAM AL NMP STA JE");
     User newUser = user.toUser();
 
     try {
       service.saveUser(newUser);
     } catch (Error e) {
-      System.out.println(e);
+      LOG.error(e.toString());
     }
     return newUser.getUsername();
   }
@@ -78,6 +83,8 @@ public class AuthController {
     User user = service
       .getUserByEmail(userDto.getEmail())
       .orElseThrow(UserNotFound::new);
+
+    LOG.info(user.toString());
 
     if (!service.passwordsMatch(user, userDto.getPassword())) {
       throw new BadCredentialsException("Invalid credentials");

@@ -3,7 +3,7 @@ import { accessTokenManger } from "./AcessTokenManager";
 import { authApi } from "./AuthAPI";
 
 const axiosClientInstance = axios.create({
-  baseURL: typeof window === undefined ? "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local" : "/",
+  baseURL: typeof window === undefined ? "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/" : "http://accounts.codedepo.com/",
   headers: {
     "Content-Type": "application/json",
   },

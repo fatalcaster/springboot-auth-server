@@ -4,12 +4,18 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserDTOSerializer extends StdSerializer<UserDTO> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(
+    UserDTOSerializer.class
+  );
 
   public UserDTOSerializer() {
     this(null);
@@ -30,9 +36,7 @@ public class UserDTOSerializer extends StdSerializer<UserDTO> {
       .getAuthentication();
     jgen.writeStartObject();
 
-    String authoritiesStr = authentication.getAuthorities().toString();
-
-    if (authoritiesStr.contains("user")) {
+    if (authentication.getAuthorities().contains("user")) {
       jgen.writeArrayFieldStart("roles");
       jgen.writeArray(
         user.getAuthorities().stream().toArray(String[]::new),
@@ -41,9 +45,7 @@ public class UserDTOSerializer extends StdSerializer<UserDTO> {
       );
       jgen.writeEndArray();
       jgen.writeStringField("email", user.getEmail());
-    } else if (
-      authentication.getAuthorities().toString().contains("user:email")
-    ) {
+    } else if (authentication.getAuthorities().contains("user:email")) {
       jgen.writeStringField("email", user.getEmail());
     }
     jgen.writeStringField("id", user.getId());

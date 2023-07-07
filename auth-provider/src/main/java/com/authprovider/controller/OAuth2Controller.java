@@ -24,6 +24,8 @@ import jakarta.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +37,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/oauth2")
 @RestController
 public class OAuth2Controller {
+
+  private static final Logger LOG = LoggerFactory.getLogger(
+    OAuth2Controller.class
+  );
 
   @Autowired
   TokenService tokenService;
@@ -113,6 +119,8 @@ public class OAuth2Controller {
     ) {
       return processAuthorizationCode(clientPayload);
     }
+    LOG.info("Bad Request");
+
     throw new BadRequest();
   }
 
@@ -122,7 +130,6 @@ public class OAuth2Controller {
     String token_id = clientPayload
       .getCode()
       .orElseThrow(() -> new BadRequest("You must provide authorization code"));
-
     Token token = tokenService.getToken(token_id).orElse(null);
 
     if (!tokenService.isTokenValid(token)) {
@@ -132,6 +139,7 @@ public class OAuth2Controller {
         token.getIsNonRevoked()
       );
     }
+    LOG.info("CODE GUT");
 
     if (
       !tokenService.isClientTokenProvider(
@@ -142,7 +150,7 @@ public class OAuth2Controller {
     ) {
       throw new NotAuthorized("You did not provide this token");
     }
-
+    LOG.info("CODE GUT 2");
     AccessTokenResponse response = processTokenResponse(
       token.getTokenSubject(),
       token.getTokenProvider(),

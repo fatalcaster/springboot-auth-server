@@ -110,6 +110,7 @@ public class UserDTO implements IJwtDto {
     throws MalformedClaimException {
     this.id = payload.getSubject();
     assignRoles(payload.getScope());
+    System.out.println(Arrays.toString(payload.getScope().toArray()));
   }
 
   @Override

@@ -91,7 +91,6 @@ public class ClientController {
     if (
       !client.getOwner().getId().equals(authUtil.getAuthorizedUser().getId())
     ) {
-      System.out.println("PROOSO");
       throw new NotAuthorized();
     }
 

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +20,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
+  private static final Logger LOG = LoggerFactory.getLogger(
+    JwtAuthorizationFilter.class
+  );
 
   private final Set<String> whitelistedRoutes = new HashSet<>(
     List.of(
@@ -72,6 +78,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       SecurityContextHolder.getContext().setAuthentication(authToken);
     }
     if (user == null) {
+      LOG.info("USER IS NULL");
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }

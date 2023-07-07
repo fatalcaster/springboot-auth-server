@@ -10,14 +10,14 @@ class UserAPI extends API {
   public async getMe(accessToken?: string) {
     return await this.handleRequest<User>(
       async () =>
-        await axiosClientInstance.get("/user/me", { data: { accessToken } })
+        await axiosClientInstance.get("api/user/me", { data: { accessToken } })
     );
   }
 
   public async getAllUsers(page: number = 0, accessToken?: string) {
     return await this.handleRequest<User[]>(
       async () =>
-        await axiosClientInstance.get(`/user/all?page=${page}`, {
+        await axiosClientInstance.get(`api/user/all?page=${page}`, {
           data: { accessToken },
         })
     );

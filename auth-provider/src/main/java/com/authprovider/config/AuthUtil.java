@@ -6,6 +6,8 @@ import com.authprovider.dto.internal.Keystore;
 import com.authprovider.service.jwt.JwtPayload;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,12 +15,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthUtil {
 
+  private static final Logger LOG = LoggerFactory.getLogger(AuthUtil.class);
+
   @Autowired
   KeyManager keyManager;
 
   public UserDTO extractUser(HttpServletRequest request) {
     String token = request.getHeader(SecureCookie.AUTHORIZATION_HEADER);
     if (token == null) {
+      LOG.info("TOKEN IS NULL");
       return null;
     }
 
@@ -29,7 +34,11 @@ public class AuthUtil {
     JwtPayload jwtPayload = JwtPayload
       .buildFromToken(token, keystore.getPublicKey(), UrlTracker.issuer)
       .orElse(null);
-    if (jwtPayload == null) return null;
+
+    if (jwtPayload == null) {
+      LOG.info("PAYLOAD IS NULL");
+      return null;
+    }
 
     return new UserDTO(jwtPayload);
   }

@@ -5,11 +5,15 @@ import com.authprovider.model.Token;
 import com.authprovider.repo.TokenRepo;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService implements ITokenService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(TokenService.class);
 
   @Autowired
   ClientService clientService;
@@ -44,11 +48,13 @@ public class TokenService implements ITokenService {
     Client owner = token.getTokenProvider();
 
     if (!owner.getId().toString().equals(clientId)) {
+      LOG.info("Client Ids don't match");
       return false;
     }
 
     // if the provided secret doesn't match the existing one
     if (!clientService.secretsMatch(clientSecret, owner.getSecret())) {
+      LOG.info("Client secrets don't match");
       return false;
     }
     return true;

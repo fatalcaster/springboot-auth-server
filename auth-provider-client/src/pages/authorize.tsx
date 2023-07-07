@@ -25,9 +25,7 @@ export default function AuthorizePage({
   const router = useRouter();
   const { client_id } = router.query;
   const oauth2Params = router.query;
-  if (!authorizedUser) {
-    router.push("/login?redirect=" + router.asPath);
-  }
+  
   useEffect(() => {
     const getClient = async () => {
       console.log(client_id);
@@ -38,12 +36,15 @@ export default function AuthorizePage({
       if (response.response) setApp(response.response);
     };
     getClient();
+    if (!authorizedUser) {
+      router.push("/login?redirect=" + encodeURIComponent(router.asPath));
+    }
   }, []);
 
   const authorize = async () => {
     try {
       const response = await axiosClientInstance.get(
-        `http://localhost:5000/api/oauth2/authorize?response_type=${oauth2Params.response_type}&redirect_uri=${oauth2Params.redirect_uri}&client_id=${oauth2Params.client_id}&scope=${oauth2Params.scope}`,
+        `http://${process.env.NEXT_PUBLIC_OAUTH_PROVIDER_URL}/api/oauth2/authorize?response_type=${oauth2Params.response_type}&redirect_uri=${encodeURIComponent(oauth2Params.redirect_uri)}&client_id=${oauth2Params.client_id}&scope=${oauth2Params.scope}`,
         {
           withCredentials: true,
         }
@@ -57,6 +58,7 @@ export default function AuthorizePage({
   if (!user) {
     return <div>Loading...</div>;
   }
+  console.log(oauth2Params.scope);
   return (
     <main className="fixed w-full flex items-center justify-center h-full">
       <ContentBox className="w-96 grid place-items-center p-4">
@@ -75,7 +77,7 @@ export default function AuthorizePage({
           <p>{oauth2Params.scope}</p>
         </div>
 
-        <LargeButton color="primary-500">Allow</LargeButton>
+        <LargeButton color="primary-500" onClick={authorize}>Allow</LargeButton>
       </ContentBox>
     </main>
   );
